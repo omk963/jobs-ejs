@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const parseVErr = require("../utils/parseValidationErrs");
+const parseVErr = require("../util/parseValidationErrs");
 
 const registerShow = (req, res) => {
     res.render("register");
@@ -30,6 +30,10 @@ const logoff = (req, res) => {
         if (err) {
             console.log(err);
         }
+
+        // clear session cookie
+        res.clearCookie('connect.sid');
+
         res.redirect("/");
     });
 };

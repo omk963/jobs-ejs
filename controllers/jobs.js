@@ -7,6 +7,7 @@ const getAllJobs = async (req, res) => {
         res.render("jobs", { jobs });
     } catch (error) {
         req.flash('error', 'Error fetching jobs');
+        return res.redirect('/jobs')
     }
 }
 
@@ -18,10 +19,12 @@ const getJob = async (req, res) => {
         });
         if (!job) {
             req.flash('error', `No job found with id ${jobId}`);
+            return res.redirect('/jobs');
         }
         res.render("job", { job });
     } catch (error) {
-
+        req.flash('error', 'Error fetching the job');
+        return res.redirect('/jobs')
     }
 }
 
@@ -32,8 +35,8 @@ const getCreate = async (req, res) => {
 const createJob = async (req, res) => {
     req.body.createdBy = req.user._id;
     const job = await Job.create(req.body)
-    req.flash("success", "The job was added.");
 
+    req.flash("success", "The job was added.");
     res.redirect("/jobs");
 }
 
@@ -43,18 +46,22 @@ const updateJob = async (req, res) => {
 
     if (company === '' || position === '') {
         req.flash('error', 'Company and Position fields cannot be empty');
+        return res.redirect('/jobs');
     }
 
     try {
         const job = await Job.findByIdAndUpdate({ _id: jobId, createdBy: req.user._id }, req.body, { new: true, runValidators: true })
         if (!job) {
             req.flash('error', `No job found with id ${jobId}`);
+            return res.redirect('/jobs');
+
         }
         // res.render("job", { job })
         req.flash('success', 'Job updated successfully');
-        res.redirect("/jobs");
+        return res.redirect("/jobs");
     } catch (error) {
         req.flash('error', 'Error updating the job');
+        return res.redirect('/jobs');
     }
 }
 
@@ -69,13 +76,15 @@ const deleteJob = async (req, res) => {
         console.log(job)
         if (!job) {
             req.flash('error', `No job found with id ${jobId}`);
+            return res.redirect('/jobs');
         }
-        res.redirect("/jobs");
         req.flash('success', 'Job deleted successfully');
+        return res.redirect("/jobs");
         // res.status(200).json({ msg: "The entry was deleted." });
         // res.render("jobs", { jobs });
     } catch (error) {
         req.flash('error', 'Error deleting the job');
+        return res.redirect('/jobs');
     }
 }
 

@@ -16,4 +16,9 @@
                         Info: <%= msg %>
                     </div>
                     <% }) } %>
-                        <hr />
+                        <% if (success) { success.forEach((msg)=> { %>
+                            <div class="success-message">
+                                Success: <%= msg %>
+                            </div>
+                            <% }) } %>
+                                <hr />
